@@ -18,7 +18,7 @@ app = Flask(__name__)
 #   Coloque o app-release.apk na raiz do projeto e use o caminho abaixo.
 #   Exemplo: "/app-release.apk"  ou  "static/app-release.apk"
 
-APK_EXTERNAL_URL = "https://exemplo.com/caminho/para/app-release.apk"  # <- MODO 1
+APK_EXTERNAL_URL = "https://drive.google.com/uc?export=download&id=1q64eMGbOx-xgQVDskubTf8lROpaFKkKR"  # <- MODO 1
 APK_LOCAL_PATH   = None  # <- MODO 2  ex: "/app-release.apk"
 
 # Nome do arquivo que aparecerá no navegador do usuário ao baixar
