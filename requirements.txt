@@ -1,0 +1,9 @@
+Flask
+Flask-Login
+Flask-WTF
+Flask-SocketIO
+ngrok
+requests
+Werkzeug
+Flask-Limiter
+eventlet
