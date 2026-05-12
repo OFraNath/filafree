@@ -6,25 +6,23 @@ app = Flask(__name__)
 APK_FILES = {
     "universal": {
         "file": "app-release.apk",
-        "gdrive_id": "1r1GBKtiRbolN-Y7eJvDwwmmEWUClRGj4",
+        "url": "https://github.com/OFraNath/filafree/releases/download/all/app-release.apk",
     },
     "armeabi-v7a": {
         "file": "app-armeabi-v7a-release.apk",
-        "gdrive_id": "1H8K5dqwwG1PZipwnsbOUKDvEs3Q3u3EC",
+        "url": "https://github.com/OFraNath/filafree/releases/download/all/app-armeabi-v7a-release.apk",
     },
     "arm64-v8a": {
         "file": "app-arm64-v8a-release.apk",
-        "gdrive_id": "1q64eMGbOx-xgQVDskubTf8lROpaFKkKR",
+        "url": "https://github.com/OFraNath/filafree/releases/download/all/app-arm64-v8a-release.apk",
     },
 }
 
-SOURCE_MODE = "gdrive"  # "gdrive" ou "local"
-
+SOURCE_MODE = "direct"
 
 @app.route("/")
 def index():
     return render_template("index.html")
-
 
 @app.route("/download/<arch>")
 def download_apk(arch):
@@ -44,9 +42,7 @@ def download_apk(arch):
             download_name=apk["file"],
         )
 
-    url = f"https://drive.google.com/uc?export=download&id={apk['gdrive_id']}"
-    return redirect(url, code=302)
-
+    return redirect(apk["url"], code=302)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
