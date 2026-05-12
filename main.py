@@ -1,32 +1,51 @@
-from flask import Flask, redirect, send_file, abort
+from flask import Flask, redirect, send_file, abort, render_template
 import os
 
 app = Flask(__name__)
 
-APK_EXTERNAL_URL = "https://drive.google.com/uc?export=download&id=1q64eMGbOx-xgQVDskubTf8lROpaFKkKR"
-APK_LOCAL_PATH   = None  # ex: "/app-release.apk"
-APK_DOWNLOAD_NAME = "app-release.apk"
+APK_FILES = {
+    "universal": {
+        "file": "app-release.apk",
+        "gdrive_id": "1r1GBKtiRbolN-Y7eJvDwwmmEWUClRGj4",
+    },
+    "armeabi-v7a": {
+        "file": "app-armeabi-v7a-release.apk",
+        "gdrive_id": "1H8K5dqwwG1PZipwnsbOUKDvEs3Q3u3EC",
+    },
+    "arm64-v8a": {
+        "file": "app-arm64-v8a-release.apk",
+        "gdrive_id": "1q64eMGbOx-xgQVDskubTf8lROpaFKkKR",
+    },
+}
+
+SOURCE_MODE = "gdrive"  # "gdrive" ou "local"
 
 
 @app.route("/")
-@app.route("/download")
-def download_apk():
-    if APK_LOCAL_PATH:
-        path = APK_LOCAL_PATH.lstrip("/")
-        full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), path)
+def index():
+    return render_template("index.html")
+
+
+@app.route("/download/<arch>")
+def download_apk(arch):
+    apk = APK_FILES.get(arch)
+    if not apk:
+        abort(404)
+
+    if SOURCE_MODE == "local":
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        full_path = os.path.join(base_dir, apk["file"])
         if not os.path.isfile(full_path):
             abort(404)
         return send_file(
             full_path,
             mimetype="application/vnd.android.package-archive",
             as_attachment=True,
-            download_name=APK_DOWNLOAD_NAME,
+            download_name=apk["file"],
         )
 
-    if APK_EXTERNAL_URL:
-        return redirect(APK_EXTERNAL_URL, code=302)
-
-    abort(500)
+    url = f"https://drive.google.com/uc?export=download&id={apk['gdrive_id']}"
+    return redirect(url, code=302)
 
 
 if __name__ == "__main__":
