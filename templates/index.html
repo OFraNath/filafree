@@ -4,222 +4,496 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Baixar App</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #050a18;
-    --surface: #0c1529;
-    --border: #162040;
-    --accent: #4DA6FF;
-    --accent-light: #7ec4ff;
-    --accent-dark: #0057D9;
-    --text: #ddeeff;
-    --muted: #5a7ab5;
-  }
+:root {
+  --bg: #050a18;
+  --surface: #0c1529;
+  --border: #162040;
+  --accent: #4DA6FF;
+  --accent-light: #7ec4ff;
+  --accent-dark: #0057D9;
+  --text: #ddeeff;
+  --muted: #5a7ab5;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
-  }
+/* ── Layout ── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow: hidden;
+}
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(77,166,255,0.18) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(0,87,217,0.18) 0%, transparent 60%);
-    pointer-events: none;
-  }
+/* ── Animated canvas background ── */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  .card {
-    width: 100%;
-    max-width: 480px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2.5rem 2rem;
-    animation: fadeUp 0.4s ease both;
-    box-shadow: 0 8px 40px rgba(0, 87, 217, 0.18);
-  }
+/* ── Noise overlay for depth ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
 
-  .badge {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid rgba(0,87,217,0.3);
-    border-radius: 999px;
-    padding: 0.25rem 0.85rem;
-    margin-bottom: 1.2rem;
-    background: rgba(0,87,217,0.06);
-  }
+/* ── Card ── */
+.card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 460px;
+  background: rgba(12, 21, 41, 0.82);
+  border: 1px solid rgba(77, 166, 255, 0.13);
+  border-radius: 22px;
+  padding: 2.4rem 2rem 2rem;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 0 0 1px rgba(77,166,255,0.04),
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    0 0 60px rgba(0,87,217,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+  opacity: 0;
+  transform: translateY(24px) scale(0.985);
+  animation: cardIn 0.55s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
+  will-change: transform, opacity;
+}
 
-  h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.9rem;
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--accent-dark) 40%, var(--accent-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+/* ── Glowing top edge ── */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 55%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(77,166,255,0.45), transparent);
+  border-radius: 1px;
+}
 
-  .subtitle {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-bottom: 2rem;
-    line-height: 1.5;
-  }
+/* ── Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(77,166,255,0.2);
+  border-radius: 999px;
+  padding: 0.22rem 0.8rem;
+  margin-bottom: 1.1rem;
+  background: rgba(0,87,217,0.07);
+}
 
-  .options { display: flex; flex-direction: column; gap: 0.75rem; }
+.badge-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 2.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
 
-  .option {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.2rem;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--text);
-    transition: border-color 0.2s, background 0.2s, transform 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
+/* ── Headings ── */
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.12;
+  margin-bottom: 0.45rem;
+  background: linear-gradient(130deg, #7ec4ff 0%, #4DA6FF 45%, #0057D9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  .option::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(0,87,217,0.06), transparent);
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
+.subtitle {
+  color: var(--muted);
+  font-size: 0.875rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.55;
+  font-weight: 300;
+}
 
-  .option:hover {
-    border-color: rgba(0,87,217,0.4);
-    background: rgba(0,87,217,0.04);
-    transform: translateY(-1px);
-  }
+/* ── Option list ── */
+.options { display: flex; flex-direction: column; gap: 0.65rem; }
 
-  .option:hover::before { opacity: 1; }
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.95rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  text-decoration: none;
+  color: var(--text);
+  background: rgba(255,255,255,0.015);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  /* Staggered entrance */
+  opacity: 0;
+  transform: translateX(-18px);
+  transition:
+    border-color 0.22s ease,
+    background 0.22s ease,
+    transform 0.18s cubic-bezier(0.34,1.56,0.64,1),
+    box-shadow 0.22s ease;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+}
 
-  .option.recommended {
-    border-color: rgba(0,87,217,0.35);
-    background: rgba(0,87,217,0.04);
-  }
+.option.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
 
-  .option-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: rgba(0,87,217,0.10);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 1.1rem;
-  }
+/* Shimmer sweep on hover */
+.option::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(77,166,255,0.06), transparent);
+  transition: left 0.45s ease;
+  pointer-events: none;
+}
 
-  .option-info { flex: 1; }
+.option:hover::before { left: 160%; }
 
-  .option-label {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--accent-light);
-  }
+.option:hover {
+  border-color: rgba(77,166,255,0.32);
+  background: rgba(0,87,217,0.05);
+  transform: translateX(3px);
+  box-shadow: 0 4px 20px rgba(0,87,217,0.1);
+}
 
-  .tag {
-    font-size: 0.6rem;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    background: rgba(0,87,217,0.12);
-    color: var(--accent);
-    padding: 0.15rem 0.5rem;
-    border-radius: 999px;
-  }
+.option:active {
+  transform: translateX(2px) scale(0.988);
+  transition-duration: 0.08s;
+}
 
-  .option-desc { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+.option.recommended {
+  border-color: rgba(77,166,255,0.28);
+  background: rgba(0,87,217,0.05);
+}
 
-  .arrow {
-    color: var(--muted);
-    font-size: 1rem;
-    transition: color 0.2s, transform 0.2s;
-  }
+/* ── Icon ── */
+.option-icon {
+  width: 38px; height: 38px;
+  border-radius: 9px;
+  background: rgba(0,87,217,0.1);
+  border: 1px solid rgba(77,166,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
 
-  .option:hover .arrow { color: var(--accent); transform: translateX(3px); }
+.option:hover .option-icon {
+  background: rgba(0,87,217,0.18);
+  border-color: rgba(77,166,255,0.22);
+  transform: scale(1.06) rotate(-3deg);
+}
 
-  hr { border: none; border-top: 1px solid var(--border); margin: 1.8rem 0 1.2rem; }
+/* ── Text ── */
+.option-info { flex: 1; min-width: 0; }
 
-  .footer { font-size: 0.75rem; color: var(--muted); text-align: center; line-height: 1.6; }
-  .footer strong { color: var(--accent-light); }
+.option-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--accent-light);
+  line-height: 1.2;
+}
 
-  .option:nth-child(1) { animation: fadeUp 0.4s 0.1s ease both; }
-  .option:nth-child(2) { animation: fadeUp 0.4s 0.18s ease both; }
-  .option:nth-child(3) { animation: fadeUp 0.4s 0.26s ease both; }
+.tag {
+  font-size: 0.58rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  background: rgba(0,87,217,0.14);
+  color: var(--accent);
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(77,166,255,0.15);
+  line-height: 1.5;
+}
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+.option-desc {
+  font-size: 0.76rem;
+  color: var(--muted);
+  margin-top: 0.18rem;
+  font-weight: 300;
+}
+
+/* ── Arrow ── */
+.arrow {
+  color: var(--muted);
+  font-size: 0.95rem;
+  transition: color 0.2s, transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.option:hover .arrow {
+  color: var(--accent);
+  transform: translateX(5px);
+}
+
+/* ── Divider ── */
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.6rem 0 1rem;
+  opacity: 0.6;
+}
+
+/* ── Footer ── */
+.footer {
+  font-size: 0.73rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+.footer strong {
+  color: var(--accent-light);
+  font-weight: 500;
+}
+
+/* ── Download ripple feedback ── */
+@keyframes ripple-out {
+  0%   { transform: scale(0); opacity: 0.35; }
+  100% { transform: scale(3.5); opacity: 0; }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(77,166,255,0.25);
+  pointer-events: none;
+  animation: ripple-out 0.55s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+/* ── Keyframes ── */
+@keyframes cardIn {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.75); }
+}
+
+/* ── Accessibility ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  #bg-canvas { display: none; }
+}
+
+/* ── Mobile tweaks ── */
+@media (max-width: 480px) {
+  .card { padding: 2rem 1.4rem 1.6rem; border-radius: 18px; }
+  h1 { font-size: 1.6rem; }
+}
 </style>
 </head>
 <body>
+
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
 <div class="card">
-  <div class="badge">Download</div>
+  <div class="badge"><span class="badge-dot" aria-hidden="true"></span>Download</div>
   <h1>Escolha a versão do app</h1>
   <p class="subtitle">Selecione a arquitetura compatível com o seu dispositivo Android.</p>
 
   <div class="options">
-    <a class="option recommended" href="/download/universal">
-      <div class="option-icon">📦</div>
+    <a class="option recommended" href="/download/universal" aria-label="Baixar versão Universal (Recomendado)">
+      <div class="option-icon" aria-hidden="true">📦</div>
       <div class="option-info">
         <div class="option-label">Universal <span class="tag">Recomendado</span></div>
         <div class="option-desc">Funciona na maioria dos dispositivos</div>
       </div>
-      <span class="arrow">→</span>
+      <span class="arrow" aria-hidden="true">→</span>
     </a>
 
-    <a class="option" href="/download/arm64-v8a">
-      <div class="option-icon">⚡</div>
+    <a class="option" href="/download/arm64-v8a" aria-label="Baixar versão 64-bit arm64-v8a">
+      <div class="option-icon" aria-hidden="true">⚡</div>
       <div class="option-info">
-        <div class="option-label">64-bit (arm64-v8a)</div>
+        <div class="option-label">64-bit <span style="opacity:0.6;font-weight:400;font-family:'DM Sans',sans-serif;font-size:0.78rem">(arm64-v8a)</span></div>
         <div class="option-desc">Dispositivos Android modernos</div>
       </div>
-      <span class="arrow">→</span>
+      <span class="arrow" aria-hidden="true">→</span>
     </a>
 
-    <a class="option" href="/download/armeabi-v7a">
-      <div class="option-icon">🔧</div>
+    <a class="option" href="/download/armeabi-v7a" aria-label="Baixar versão 32-bit armeabi-v7a">
+      <div class="option-icon" aria-hidden="true">🔧</div>
       <div class="option-info">
-        <div class="option-label">32-bit (armeabi-v7a)</div>
+        <div class="option-label">32-bit <span style="opacity:0.6;font-weight:400;font-family:'DM Sans',sans-serif;font-size:0.78rem">(armeabi-v7a)</span></div>
         <div class="option-desc">Dispositivos Android mais antigos</div>
       </div>
-      <span class="arrow">→</span>
+      <span class="arrow" aria-hidden="true">→</span>
     </a>
   </div>
 
   <hr/>
   <p class="footer">Não sabe qual escolher? Use a versão <strong>Universal</strong>.<br/>Requer Android 5.0 ou superior.</p>
 </div>
+
+<script>
+/* ── Animated background: floating particles + mesh gradient ── */
+(function () {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles, raf;
+
+  const COLORS = ['77,166,255', '0,87,217', '125,195,255'];
+  const COUNT = 38;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  function mkParticle() {
+    return {
+      x: rand(0, W),
+      y: rand(0, H),
+      r: rand(1.2, 3.2),
+      vx: rand(-0.18, 0.18),
+      vy: rand(-0.22, 0.1),
+      a: rand(0.04, 0.22),
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      twinkleSpeed: rand(0.008, 0.022),
+      twinkleOffset: rand(0, Math.PI * 2),
+    };
+  }
+
+  function init() {
+    resize();
+    particles = Array.from({ length: COUNT }, mkParticle);
+  }
+
+  /* Two slow-moving gradient orbs */
+  let t = 0;
+  function drawOrbs() {
+    const ox1 = W * (0.15 + 0.1  * Math.sin(t * 0.00042));
+    const oy1 = H * (0.18 + 0.1  * Math.cos(t * 0.00038));
+    const ox2 = W * (0.80 + 0.09 * Math.cos(t * 0.00035));
+    const oy2 = H * (0.78 + 0.08 * Math.sin(t * 0.00044));
+
+    const g1 = ctx.createRadialGradient(ox1, oy1, 0, ox1, oy1, W * 0.38);
+    g1.addColorStop(0, 'rgba(77,166,255,0.11)');
+    g1.addColorStop(1, 'rgba(77,166,255,0)');
+    ctx.fillStyle = g1;
+    ctx.fillRect(0, 0, W, H);
+
+    const g2 = ctx.createRadialGradient(ox2, oy2, 0, ox2, oy2, W * 0.32);
+    g2.addColorStop(0, 'rgba(0,87,217,0.13)');
+    g2.addColorStop(1, 'rgba(0,87,217,0)');
+    ctx.fillStyle = g2;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function draw(ts) {
+    t = ts;
+    ctx.clearRect(0, 0, W, H);
+    drawOrbs();
+
+    particles.forEach(p => {
+      /* twinkle */
+      const alpha = p.a * (0.5 + 0.5 * Math.sin(ts * p.twinkleSpeed + p.twinkleOffset));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${alpha})`;
+      ctx.fill();
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      /* soft wrap */
+      if (p.x < -6) p.x = W + 6;
+      if (p.x > W + 6) p.x = -6;
+      if (p.y < -6) p.y = H + 6;
+      if (p.y > H + 6) p.y = -6;
+    });
+
+    raf = requestAnimationFrame(draw);
+  }
+
+  init();
+  raf = requestAnimationFrame(draw);
+
+  /* throttled resize */
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { resize(); }, 120);
+  });
+
+  /* stop when tab hidden, resume when visible — saves CPU */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { cancelAnimationFrame(raf); }
+    else { raf = requestAnimationFrame(draw); }
+  });
+})();
+
+/* ── Staggered option entrance ── */
+(function () {
+  const options = document.querySelectorAll('.option');
+  const delay = [120, 210, 300];
+  options.forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), delay[i]);
+  });
+})();
+
+/* ── Ripple on click ── */
+document.querySelectorAll('.option').forEach(el => {
+  el.addEventListener('click', function (e) {
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 0.6;
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top  - size / 2;
+    const rip = document.createElement('span');
+    rip.className = 'ripple';
+    rip.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
+    this.appendChild(rip);
+    rip.addEventListener('animationend', () => rip.remove(), { once: true });
+  });
+});
+</script>
 </body>
 </html>
