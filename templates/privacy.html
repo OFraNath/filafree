@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Política de Privacidade — FilaFree</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #050a18;
+  --accent: #4DA6FF;
+  --accent-light: #7ec4ff;
+  --accent-dark: #0057D9;
+  --text-dark: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --surface: #f8fafc;
+  --white: #ffffff;
+  --blue-subtle: #eff6ff;
+  --blue-border: #bfdbfe;
+}
+
+body {
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ── Animated canvas bg ── */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+/* ── Page shell ── */
+.page {
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 5rem;
+}
+
+/* ── Top nav ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.4rem;
+  opacity: 0;
+  animation: fadeUp .45s cubic-bezier(.22,1,.36,1) .05s forwards;
+}
+
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  background: linear-gradient(130deg,#7ec4ff 0%,#4DA6FF 50%,#0057D9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .78rem;
+  color: #5a7ab5;
+  text-decoration: none;
+  font-weight: 400;
+  transition: color .2s;
+}
+.back-btn:hover { color: var(--accent-light); }
+.back-btn svg { width:14px; height:14px; flex-shrink:0; }
+
+/* ── White document card ── */
+.doc-card {
+  background: var(--white);
+  border-radius: 24px;
+  box-shadow:
+    0 0 0 1px rgba(77,166,255,0.1),
+    0 20px 60px rgba(0,0,0,0.35),
+    0 4px 16px rgba(0,0,0,0.2);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(22px);
+  animation: fadeUp .6s cubic-bezier(.22,1,.36,1) .15s forwards;
+}
+
+/* ── Doc header ── */
+.doc-header {
+  background: linear-gradient(135deg, #0057D9 0%, #1e40af 50%, #0f172a 100%);
+  padding: 3rem 3.5rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.doc-header::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: rgba(77,166,255,0.12);
+  pointer-events: none;
+}
+
+.doc-header::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 40%;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: rgba(125,195,255,0.07);
+  pointer-events: none;
+}
+
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .65rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #93c5fd;
+  border: 1px solid rgba(147,197,253,.25);
+  border-radius: 999px;
+  padding: .22rem .85rem;
+  margin-bottom: 1.1rem;
+  background: rgba(255,255,255,.06);
+  position: relative;
+  z-index: 1;
+}
+
+.header-badge-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #93c5fd;
+  animation: pulseDot 2.2s ease-in-out infinite;
+}
+
+.doc-header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-bottom: .6rem;
+  position: relative;
+  z-index: 1;
+  background: none;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.doc-header-meta {
+  font-size: .82rem;
+  color: #93c5fd;
+  font-weight: 300;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.doc-header-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+}
+
+/* ── TOC strip ── */
+.toc-strip {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 3.5rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.toc-label {
+  font-size: .68rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-right: .3rem;
+}
+
+.toc-link {
+  font-size: .73rem;
+  color: var(--accent-dark);
+  text-decoration: none;
+  padding: .2rem .6rem;
+  border-radius: 6px;
+  background: var(--blue-subtle);
+  border: 1px solid var(--blue-border);
+  font-weight: 400;
+  transition: background .18s, color .18s;
+  white-space: nowrap;
+}
+.toc-link:hover { background: #dbeafe; color: #1d4ed8; }
+
+/* ── Doc body ── */
+.doc-body {
+  padding: 0 3.5rem 3rem;
+}
+
+/* ── Section ── */
+.section {
+  padding: 2.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.section:last-of-type { border-bottom: none; }
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: .9rem;
+  margin-bottom: 1.3rem;
+}
+
+.section-num {
+  flex-shrink: 0;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: var(--blue-subtle);
+  border: 1px solid var(--blue-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--accent-dark);
+  margin-top: 2px;
+}
+
+.section h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.3;
+}
+
+/* ── Prose ── */
+p {
+  font-size: .9rem;
+  line-height: 1.8;
+  color: var(--text-body);
+  font-weight: 300;
+  margin-bottom: .85rem;
+}
+p:last-child { margin-bottom: 0; }
+
+strong { color: var(--text-dark); font-weight: 500; }
+
+/* ── Info box ── */
+.info-box {
+  background: var(--blue-subtle);
+  border: 1px solid var(--blue-border);
+  border-left: 3px solid var(--accent-dark);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  font-size: .875rem;
+  color: #1e40af;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.info-box strong { color: #1d4ed8; }
+
+/* ── Warning box ── */
+.warn-box {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid #f59e0b;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  font-size: .875rem;
+  color: #92400e;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+/* ── Data table ── */
+.table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .84rem;
+  min-width: 480px;
+}
+
+thead tr {
+  background: var(--surface);
+}
+
+th {
+  padding: .75rem 1rem;
+  text-align: left;
+  font-family: 'Syne', sans-serif;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: .8rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-body);
+  font-weight: 300;
+  line-height: 1.55;
+  vertical-align: top;
+}
+
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: #f8fafc; }
+
+/* ── Pills ── */
+.pill {
+  display: inline-block;
+  font-size: .68rem;
+  font-weight: 500;
+  padding: .18rem .6rem;
+  border-radius: 999px;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.pill-yes { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.pill-no  { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+.pill-anon{ background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+/* ── Rights grid ── */
+.rights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: .75rem;
+  margin-top: .8rem;
+}
+
+.right-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+
+.right-card-icon {
+  font-size: 1.1rem;
+  margin-bottom: .5rem;
+  display: block;
+}
+
+.right-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: .3rem;
+}
+
+.right-card-desc {
+  font-size: .78rem;
+  color: var(--text-muted);
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+/* ── Contact cards ── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: .75rem;
+  margin-top: .8rem;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: .9rem 1.1rem;
+}
+
+.contact-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  background: var(--blue-subtle);
+  border: 1px solid var(--blue-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+}
+
+.contact-label { font-size: .7rem; color: var(--text-muted); font-weight: 300; }
+.contact-value { font-size: .84rem; color: var(--accent-dark); font-weight: 500; }
+
+/* ── Security list ── */
+.security-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+  margin: .8rem 0;
+}
+
+.security-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  font-size: .88rem;
+  color: var(--text-body);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.security-list li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  margin-top: 2px;
+  border-radius: 5px;
+  background: var(--blue-subtle);
+  border: 1px solid var(--blue-border);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 8.5l3.5 3L13 5' stroke='%231d4ed8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 13px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* ── Doc footer ── */
+.doc-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 1.4rem 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+
+.doc-footer-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: .95rem;
+  color: var(--accent-dark);
+}
+
+.doc-footer-text {
+  font-size: .73rem;
+  color: var(--text-muted);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* ── Page footer ── */
+.page-footer {
+  text-align: center;
+  font-size: .73rem;
+  color: #3a5a8a;
+  font-weight: 300;
+  margin-top: 2rem;
+  line-height: 1.7;
+  opacity: 0;
+  animation: fadeUp .5s cubic-bezier(.22,1,.36,1) .6s forwards;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseDot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%     { opacity:.5; transform:scale(.75); }
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .doc-header  { padding: 2rem 1.5rem 1.8rem; }
+  .toc-strip   { padding: .9rem 1.5rem; }
+  .doc-body    { padding: 0 1.5rem 2rem; }
+  .doc-footer  { padding: 1.2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+  .rights-grid { grid-template-columns: 1fr; }
+  .contact-grid{ grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  #bg-canvas { display:none; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<div class="page">
+
+  <!-- Top nav -->
+  <nav class="topbar">
+    <a class="logo" href="/">FilaFree</a>
+    <a class="back-btn" href="/">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+      Voltar
+    </a>
+  </nav>
+
+  <!-- Document card -->
+  <main class="doc-card" aria-label="Política de Privacidade FilaFree">
+
+    <!-- Header -->
+    <header class="doc-header">
+      <div class="header-badge"><span class="header-badge-dot" aria-hidden="true"></span>Documento Legal</div>
+      <h1>Política de Privacidade</h1>
+      <div class="doc-header-meta">
+        <span>📅 Última atualização: maio de 2025</span>
+        <span>🏢 FilaFree — Sistema de Filas Virtuais</span>
+        <span>⚖️ Em conformidade com a LGPD (Lei nº 13.709/2018)</span>
+      </div>
+    </header>
+
+    <!-- Table of contents -->
+    <nav class="toc-strip" aria-label="Índice">
+      <span class="toc-label">Seções</span>
+      <a class="toc-link" href="#s1">Introdução</a>
+      <a class="toc-link" href="#s2">Dados Coletados</a>
+      <a class="toc-link" href="#s3">Finalidade</a>
+      <a class="toc-link" href="#s4">Compartilhamento</a>
+      <a class="toc-link" href="#s5">Pagamentos</a>
+      <a class="toc-link" href="#s6">Retenção</a>
+      <a class="toc-link" href="#s7">Segurança</a>
+      <a class="toc-link" href="#s8">Seus Direitos</a>
+      <a class="toc-link" href="#s9">Contato</a>
+      <a class="toc-link" href="#s10">Alterações</a>
+    </nav>
+
+    <!-- Body -->
+    <div class="doc-body">
+
+      <!-- 1. Introdução -->
+      <section class="section" id="s1">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">1</div>
+          <h2>Introdução</h2>
+        </div>
+        <p>
+          O <strong>FilaFree</strong> é um sistema de gerenciamento de filas virtuais que conecta estabelecimentos comerciais a seus clientes, eliminando a espera física por meio de tecnologia. Esta Política de Privacidade descreve de forma transparente como tratamos as informações pessoais dos usuários do aplicativo e do serviço associado.
+        </p>
+        <p>
+          O controlador dos dados pessoais é o <strong>FilaFree</strong>, cujo canal de contato está indicado na Seção 9. Ao criar uma conta ou utilizar o FilaFree, o usuário declara ter lido e concordado com os termos aqui descritos. Caso não concorde, recomendamos que não utilize o aplicativo.
+        </p>
+        <div class="info-box">
+          <strong>Princípio da minimização:</strong> coletamos apenas os dados estritamente necessários para o funcionamento do serviço. Nenhum dado é coletado por conveniência ou para fins comerciais não declarados.
+        </div>
+      </section>
+
+      <!-- 2. Dados coletados -->
+      <section class="section" id="s2">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">2</div>
+          <h2>Dados Pessoais Coletados</h2>
+        </div>
+        <p>
+          A tabela abaixo descreve todos os dados pessoais processados pelo FilaFree, sua natureza e como são tratados.
+        </p>
+
+        <div class="table-wrap">
+          <table aria-label="Dados pessoais coletados">
+            <thead>
+              <tr>
+                <th>Categoria</th>
+                <th>Dado</th>
+                <th>Coletado?</th>
+                <th>Transferido a terceiros?</th>
+                <th>Observação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Informações de usuário</td>
+                <td>Endereço de e-mail</td>
+                <td><span class="pill pill-yes">Sim</span></td>
+                <td><span class="pill pill-yes">Sim</span></td>
+                <td>Usado para autenticação e envio de e-mails transacionais via Resend</td>
+              </tr>
+              <tr>
+                <td>Informações de usuário</td>
+                <td>ID de usuário</td>
+                <td><span class="pill pill-yes">Sim</span></td>
+                <td><span class="pill pill-yes">Sim</span></td>
+                <td>Compartilhado com Google (login OAuth) e Supabase (banco de dados)</td>
+              </tr>
+              <tr>
+                <td>Dispositivo</td>
+                <td>ID do dispositivo</td>
+                <td><span class="pill pill-yes">Sim</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>Usado internamente para segurança e prevenção de fraudes</td>
+              </tr>
+              <tr>
+                <td>Desempenho do app</td>
+                <td>Logs de erros (crash logs)</td>
+                <td><span class="pill pill-yes">Sim</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>Registrados internamente para identificação e correção de falhas</td>
+              </tr>
+              <tr>
+                <td>Desempenho do app</td>
+                <td>Diagnósticos</td>
+                <td><span class="pill pill-yes">Sim</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>Métricas de desempenho para melhoria contínua do serviço</td>
+              </tr>
+              <tr>
+                <td>Atividade no app</td>
+                <td>Interações com o app</td>
+                <td><span class="pill pill-yes">Sim</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>Analytics de uso agregado; processado internamente</td>
+              </tr>
+              <tr>
+                <td>Informações de usuário</td>
+                <td>Nome</td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Informações de usuário</td>
+                <td>Endereço / Telefone</td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Financeiro</td>
+                <td>Dados de pagamento</td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>Processado exclusivamente pela Amazon Appstore (ver Seção 5)</td>
+              </tr>
+              <tr>
+                <td>Localização</td>
+                <td>Localização aproximada ou precisa</td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Dados sensíveis</td>
+                <td>Raça, etnia, orientação sexual, crenças</td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Mídia</td>
+                <td>Fotos, vídeos, áudios</td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td><span class="pill pill-no">Não</span></td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. Finalidade -->
+      <section class="section" id="s3">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">3</div>
+          <h2>Finalidade do Tratamento</h2>
+        </div>
+        <p>Os dados pessoais são tratados exclusivamente para as seguintes finalidades, com base legal indicada para cada caso:</p>
+
+        <div class="table-wrap">
+          <table aria-label="Finalidades do tratamento de dados">
+            <thead>
+              <tr>
+                <th>Finalidade</th>
+                <th>Dados envolvidos</th>
+                <th>Base legal (LGPD)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Criação e autenticação de conta</strong></td>
+                <td>E-mail, ID de usuário</td>
+                <td>Execução de contrato (Art. 7º, V)</td>
+              </tr>
+              <tr>
+                <td><strong>Envio de e-mails transacionais</strong> (verificação de e-mail, recuperação de senha)</td>
+                <td>E-mail</td>
+                <td>Execução de contrato (Art. 7º, V)</td>
+              </tr>
+              <tr>
+                <td><strong>Segurança e prevenção de fraudes</strong></td>
+                <td>ID do dispositivo, ID de usuário</td>
+                <td>Legítimo interesse (Art. 7º, IX)</td>
+              </tr>
+              <tr>
+                <td><strong>Diagnóstico e correção de erros</strong></td>
+                <td>Logs de erro, diagnósticos</td>
+                <td>Legítimo interesse (Art. 7º, IX)</td>
+              </tr>
+              <tr>
+                <td><strong>Analytics e melhoria do produto</strong></td>
+                <td>Interações agregadas no app</td>
+                <td>Legítimo interesse (Art. 7º, IX)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="warn-box" style="margin-top:1rem;">
+          <strong>Importante:</strong> o FilaFree não realiza tomada de decisão automatizada (profiling) que produza efeitos legais ou significativos sobre o usuário.
+        </div>
+      </section>
+
+      <!-- 4. Compartilhamento -->
+      <section class="section" id="s4">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">4</div>
+          <h2>Compartilhamento com Terceiros</h2>
+        </div>
+        <p>
+          O FilaFree <strong>não vende, aluga nem comercializa</strong> dados pessoais de usuários. O compartilhamento ocorre apenas com os subprocessadores abaixo, na estrita medida necessária para a operação do serviço:
+        </p>
+
+        <div class="table-wrap">
+          <table aria-label="Terceiros que recebem dados">
+            <thead>
+              <tr>
+                <th>Subprocessador</th>
+                <th>País sede</th>
+                <th>Dado compartilhado</th>
+                <th>Finalidade</th>
+                <th>Política de privacidade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Resend</strong></td>
+                <td>EUA</td>
+                <td>Endereço de e-mail</td>
+                <td>Entrega de e-mails transacionais</td>
+                <td><a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener" style="color:var(--accent-dark);">resend.com</a></td>
+              </tr>
+              <tr>
+                <td><strong>Google LLC</strong></td>
+                <td>EUA</td>
+                <td>ID de usuário Google</td>
+                <td>Verificação de token OAuth (login com Google)</td>
+                <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:var(--accent-dark);">google.com</a></td>
+              </tr>
+              <tr>
+                <td><strong>Supabase</strong></td>
+                <td>EUA</td>
+                <td>E-mail, ID de usuário</td>
+                <td>Hospedagem do banco de dados de produção</td>
+                <td><a href="https://supabase.com/privacy" target="_blank" rel="noopener" style="color:var(--accent-dark);">supabase.com</a></td>
+              </tr>
+              <tr>
+                <td><strong>Railway</strong></td>
+                <td>EUA</td>
+                <td>Dados em trânsito (API)</td>
+                <td>Infraestrutura de hospedagem da API</td>
+                <td><a href="https://railway.app/legal/privacy" target="_blank" rel="noopener" style="color:var(--accent-dark);">railway.app</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="margin-top:1rem;">
+          Todos os subprocessadores estão sujeitos a obrigações contratuais de confidencialidade e segurança. A transferência internacional de dados para os EUA ocorre com base em cláusulas contratuais padrão reconhecidas pela ANPD.
+        </p>
+      </section>
+
+      <!-- 5. Pagamentos -->
+      <section class="section" id="s5">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">5</div>
+          <h2>Pagamentos e Informações Financeiras</h2>
+        </div>
+        <p>
+          As assinaturas do FilaFree são integralmente processadas pela <strong>Amazon Appstore</strong> por meio do seu sistema nativo de compras (<em>In-App Purchasing</em>). O FilaFree <strong>não coleta, armazena, processa nem visualiza</strong> qualquer dado financeiro do usuário, incluindo números de cartão de crédito, dados bancários, histórico de compras ou pontuação de crédito.
+        </p>
+        <div class="info-box">
+          O tratamento de dados de pagamento é realizado exclusivamente pela Amazon, sujeito à <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=468496" target="_blank" rel="noopener" style="color:#1d4ed8;font-weight:500;">Política de Privacidade da Amazon</a>. Em caso de dúvidas sobre cobrança, o usuário deve contatar diretamente o suporte da Amazon.
+        </div>
+      </section>
+
+      <!-- 6. Retenção -->
+      <section class="section" id="s6">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">6</div>
+          <h2>Retenção e Exclusão de Dados</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-label="Prazos de retenção">
+            <thead>
+              <tr>
+                <th>Dado</th>
+                <th>Período de retenção</th>
+                <th>Ação após prazo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>E-mail e ID de usuário</td>
+                <td>Enquanto a conta estiver ativa</td>
+                <td>Excluído em até 30 dias após solicitação de exclusão de conta</td>
+              </tr>
+              <tr>
+                <td>ID do dispositivo</td>
+                <td>Enquanto a conta estiver ativa</td>
+                <td>Excluído junto com a conta</td>
+              </tr>
+              <tr>
+                <td>Logs de erro e diagnósticos</td>
+                <td>Até 12 meses</td>
+                <td>Deletados automaticamente; armazenados de forma anonimizada</td>
+              </tr>
+              <tr>
+                <td>Dados de analytics</td>
+                <td>Até 12 meses</td>
+                <td>Dados agregados e anonimizados; sem vínculo com identidade</td>
+              </tr>
+              <tr>
+                <td>Códigos de verificação (Redis)</td>
+                <td>10 minutos</td>
+                <td>Expiração automática pelo sistema</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="margin-top:1rem;">
+          Para solicitar a exclusão da sua conta e dos dados associados, entre em contato pelo e-mail indicado na Seção 9. Atenderemos a solicitação em até <strong>30 dias</strong>, salvo obrigação legal que exija retenção por prazo superior.
+        </p>
+      </section>
+
+      <!-- 7. Segurança -->
+      <section class="section" id="s7">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">7</div>
+          <h2>Medidas de Segurança</h2>
+        </div>
+        <p>Adotamos medidas técnicas e organizacionais proporcionais ao risco para proteger os dados pessoais dos usuários:</p>
+
+        <ul class="security-list" aria-label="Medidas de segurança">
+          <li><strong>Criptografia de senhas:</strong> armazenadas exclusivamente como hash bcrypt (salt rounds ≥ 8), nunca em texto plano.</li>
+          <li><strong>Comunicação segura:</strong> toda comunicação entre o app e o servidor ocorre via HTTPS com TLS, impedindo interceptação.</li>
+          <li><strong>Autenticação por tokens:</strong> JWT com expiração configurada; tokens são stateless e assinados com chave secreta em ambiente de produção.</li>
+          <li><strong>Códigos de verificação temporários:</strong> expiram em 10 minutos e possuem limite de 5 tentativas, prevenindo ataques de força bruta.</li>
+          <li><strong>Acesso restrito ao banco de dados:</strong> apenas a API de produção possui credenciais de acesso ao Supabase; conexão exige SSL.</li>
+          <li><strong>Separação de ambientes:</strong> ambientes de desenvolvimento, teste e produção são isolados, sem acesso cruzado a dados reais.</li>
+        </ul>
+
+        <div class="warn-box" style="margin-top:1rem;">
+          Nenhum sistema de segurança é absolutamente infalível. Em caso de incidente de segurança que afete dados pessoais, os usuários impactados serão notificados conforme previsto no Art. 48 da LGPD e a ANPD será comunicada quando aplicável.
+        </div>
+      </section>
+
+      <!-- 8. Direitos -->
+      <section class="section" id="s8">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">8</div>
+          <h2>Seus Direitos como Titular de Dados (LGPD)</h2>
+        </div>
+        <p>
+          Nos termos dos Arts. 17 a 22 da Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você possui os seguintes direitos em relação aos seus dados pessoais:
+        </p>
+
+        <div class="rights-grid">
+          <div class="right-card">
+            <span class="right-card-icon" aria-hidden="true">👁️</span>
+            <div class="right-card-title">Acesso</div>
+            <div class="right-card-desc">Confirmar a existência de tratamento e acessar seus dados pessoais.</div>
+          </div>
+          <div class="right-card">
+            <span class="right-card-icon" aria-hidden="true">✏️</span>
+            <div class="right-card-title">Correção</div>
+            <div class="right-card-desc">Solicitar a correção de dados incompletos, inexatos ou desatualizados.</div>
+          </div>
+          <div class="right-card">
+            <span class="right-card-icon" aria-hidden="true">🗑️</span>
+            <div class="right-card-title">Exclusão</div>
+            <div class="right-card-desc">Solicitar a eliminação dos dados tratados com base em consentimento.</div>
+          </div>
+          <div class="right-card">
+            <span class="right-card-icon" aria-hidden="true">📦</span>
+            <div class="right-card-title">Portabilidade</div>
+            <div class="right-card-desc">Receber seus dados em formato estruturado e interoperável.</div>
+          </div>
+          <div class="right-card">
+            <span class="right-card-icon" aria-hidden="true">🚫</span>
+            <div class="right-card-title">Oposição</div>
+            <div class="right-card-desc">Opor-se ao tratamento realizado com base em legítimo interesse.</div>
+          </div>
+          <div class="right-card">
+            <span class="right-card-icon" aria-hidden="true">ℹ️</span>
+            <div class="right-card-title">Informação</div>
+            <div class="right-card-desc">Obter informações sobre entidades com as quais compartilhamos seus dados.</div>
+          </div>
+          <div class="right-card">
+            <span class="right-card-icon" aria-hidden="true">↩️</span>
+            <div class="right-card-title">Revogação</div>
+            <div class="right-card-desc">Retirar consentimentos concedidos anteriormente, a qualquer momento.</div>
+          </div>
+          <div class="right-card">
+            <span class="right-card-icon" aria-hidden="true">⚖️</span>
+            <div class="right-card-title">Revisão</div>
+            <div class="right-card-desc">Solicitar revisão de decisões automatizadas que afetem seus interesses.</div>
+          </div>
+        </div>
+
+        <p style="margin-top:1.2rem;">
+          Para exercer qualquer um desses direitos, entre em contato pelo canal indicado na Seção 9. Responderemos em até <strong>15 dias úteis</strong>. Podemos solicitar a verificação de identidade antes de atender à solicitação.
+        </p>
+        <p>
+          Você também tem o direito de apresentar reclamação perante a <strong>Autoridade Nacional de Proteção de Dados (ANPD)</strong> em <a href="https://www.gov.br/anpd" target="_blank" rel="noopener" style="color:var(--accent-dark);">gov.br/anpd</a>, caso entenda que seus direitos foram violados.
+        </p>
+      </section>
+
+      <!-- 9. Contato -->
+      <section class="section" id="s9">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">9</div>
+          <h2>Contato e Encarregado de Dados (DPO)</h2>
+        </div>
+        <p>
+          Para exercer seus direitos, esclarecer dúvidas sobre esta política ou reportar qualquer questão relacionada à privacidade, entre em contato com o responsável pelo tratamento de dados pessoais do FilaFree:
+        </p>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <div class="contact-icon" aria-hidden="true">📧</div>
+            <div>
+              <div class="contact-label">E-mail (privacidade / DPO)</div>
+              <div class="contact-value">privacidade@filafree.app.br</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon" aria-hidden="true">🌐</div>
+            <div>
+              <div class="contact-label">Site</div>
+              <div class="contact-value">filafree.app.br</div>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-icon" aria-hidden="true">⏱️</div>
+            <div>
+              <div class="contact-label">Prazo de resposta</div>
+              <div class="contact-value">Até 15 dias úteis</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. Alterações -->
+      <section class="section" id="s10">
+        <div class="section-header">
+          <div class="section-num" aria-hidden="true">10</div>
+          <h2>Alterações nesta Política</h2>
+        </div>
+        <p>
+          Esta Política de Privacidade pode ser atualizada periodicamente para refletir mudanças no serviço, na legislação ou nas nossas práticas. Alterações <strong>materiais</strong> — aquelas que afetem direitos dos usuários ou ampliem o escopo do tratamento de dados — serão comunicadas com pelo menos <strong>7 dias de antecedência</strong> por e-mail e/ou notificação no aplicativo.
+        </p>
+        <p>
+          Alterações não materiais (correções ortográficas, clareza de linguagem, reorganização sem mudança de conteúdo) podem ser feitas sem aviso prévio. A data de "Última atualização" no topo deste documento é sempre atualizada em qualquer alteração.
+        </p>
+        <p>
+          O uso continuado do FilaFree após a entrada em vigor de uma nova versão desta política implica aceitação das novas condições. Se não concordar com as alterações, o usuário pode solicitar a exclusão da conta conforme descrito na Seção 6.
+        </p>
+      </section>
+
+    </div><!-- /doc-body -->
+
+    <!-- Doc footer -->
+    <footer class="doc-footer">
+      <div class="doc-footer-logo">FilaFree</div>
+      <div class="doc-footer-text">
+        © 2025 FilaFree. Todos os direitos reservados.<br/>
+        Em conformidade com a LGPD — Lei nº 13.709/2018 e regulamentações da ANPD.
+      </div>
+    </footer>
+
+  </main><!-- /doc-card -->
+
+  <p class="page-footer">
+    filafree.app.br/privacy &nbsp;·&nbsp; Versão 1.0 &nbsp;·&nbsp; maio de 2025
+  </p>
+
+</div><!-- /page -->
+
+<script>
+/* ── Animated background ── */
+(function () {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles, raf;
+  const COLORS = ['77,166,255','0,87,217','125,195,255'];
+  const COUNT = 38;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  function rand(a,b) { return a + Math.random()*(b-a); }
+  function mkP() {
+    return { x:rand(0,W), y:rand(0,H), r:rand(1.2,3.2), vx:rand(-.18,.18), vy:rand(-.22,.1),
+      a:rand(.04,.22), color:COLORS[Math.floor(Math.random()*COLORS.length)],
+      ts:rand(.008,.022), to:rand(0,Math.PI*2) };
+  }
+  let t = 0;
+  function drawOrbs() {
+    const o1x=W*(.15+.1*Math.sin(t*.00042)), o1y=H*(.18+.1*Math.cos(t*.00038));
+    const o2x=W*(.80+.09*Math.cos(t*.00035)), o2y=H*(.78+.08*Math.sin(t*.00044));
+    const g1=ctx.createRadialGradient(o1x,o1y,0,o1x,o1y,W*.38);
+    g1.addColorStop(0,'rgba(77,166,255,.11)'); g1.addColorStop(1,'rgba(77,166,255,0)');
+    ctx.fillStyle=g1; ctx.fillRect(0,0,W,H);
+    const g2=ctx.createRadialGradient(o2x,o2y,0,o2x,o2y,W*.32);
+    g2.addColorStop(0,'rgba(0,87,217,.13)'); g2.addColorStop(1,'rgba(0,87,217,0)');
+    ctx.fillStyle=g2; ctx.fillRect(0,0,W,H);
+  }
+  function draw(ts) {
+    t=ts; ctx.clearRect(0,0,W,H); drawOrbs();
+    particles.forEach(p => {
+      const a=p.a*(.5+.5*Math.sin(ts*p.ts+p.to));
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${p.color},${a})`; ctx.fill();
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<-6)p.x=W+6; if(p.x>W+6)p.x=-6;
+      if(p.y<-6)p.y=H+6; if(p.y>H+6)p.y=-6;
+    });
+    raf=requestAnimationFrame(draw);
+  }
+  resize(); particles=Array.from({length:COUNT},mkP); raf=requestAnimationFrame(draw);
+  let rt; window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(resize,120);});
+  document.addEventListener('visibilitychange',()=>{ document.hidden?cancelAnimationFrame(raf):raf=requestAnimationFrame(draw); });
+})();
+
+/* ── Smooth scroll for TOC links ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
